@@ -1,0 +1,54 @@
+`timescale 1ns / 1ps
+module jkff_2(j,k,clk,r,s,ce,qout);
+input j,k,clk,r,s,ce;
+output qout;
+reg qout;
+always@(posedge(clk))                                                                                                                                                                          
+begin
+    if(ce==1)
+    begin
+        if(r==1)
+            qout<=0;
+        else if(s==1)
+            qout<=1;
+        else if(j==0 && k==0)
+            qout<=0;
+        else if(j==0 && k==1)
+            qout<=0;
+        else if(j==1 && k==0)
+                        qout<=1;
+        else                  
+            qout <= ~qout;
+    end
+end
+endmodule
+
+
+Test Bench
+
+
+module jkff_2_tb;
+reg j,k,clk,r,s,ce;
+wire qout;
+//module jkff_2(j,k,clk,r,s,ce,qout);
+jkff_2 x1(j,k,clk,r,s,ce,qout);
+initial
+clk=1'b0;
+begin
+always #5 clk=~clk;
+end
+initial
+begin
+r=0;s=0;ce=0;j=0;k=0;
+#20 ce=1;
+#15 j=1;k=0;
+#15 j=0;k=1;
+#15 j=0;k=0;
+#15 j=1;k=1;
+#50 r=1;
+#20 r=0;
+#20 s=1;
+#20 s=0;r=0;
+#50 $finish;
+end
+endmodule
